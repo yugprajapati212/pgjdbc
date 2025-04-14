@@ -1,38 +1,25 @@
-<img height="90" alt="Slonik Duke" align="right" src="docs/static/images/slonik_duke.png" />
+# Project 3: PostgreSQL JDBC Driver
+PostgreSQL Java Database Connectivity Driver is a driver that helps Java apps talk to PostgreSQL databases.
 
-# PostgreSQL JDBC Driver
+**Original repository:** https://github.com/pgjdbc/pgjdbc
 
-PostgreSQL JDBC Driver (PgJDBC for short) allows Java programs to connect to a PostgreSQL database using standard, database independent Java code. Is an open source JDBC driver written in Pure Java (Type 4), and communicates in the PostgreSQL native network protocol.
 
-### Status
-[![GitHub CI](https://github.com/pgjdbc/pgjdbc/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/pgjdbc/pgjdbc/actions/workflows/main.yml)
-[![Build status](https://ci.appveyor.com/api/projects/status/d8ucmegnmourohwu/branch/master?svg=true)](https://ci.appveyor.com/project/davecramer/pgjdbc/branch/master)
-[![codecov.io](http://codecov.io/github/pgjdbc/pgjdbc/coverage.svg?branch=master)](http://codecov.io/github/pgjdbc/pgjdbc?branch=master)
-[![License](https://img.shields.io/badge/License-BSD--2--Clause-blue.svg)](https://opensource.org/licenses/BSD-2-Clause)
-[![Join the chat at https://gitter.im/pgjdbc/pgjdbc](https://badges.gitter.im/pgjdbc/pgjdbc.svg)](https://gitter.im/pgjdbc/pgjdbc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# Overview of PGJDBC
+PGJDBC is an open source Java library that enables Java programs to connect, query and update PostgreSQL databases using the standard SQL.
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.postgresql/postgresql/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.postgresql/postgresql)
-[![Javadocs](http://javadoc.io/badge/org.postgresql/postgresql.svg)](http://javadoc.io/doc/org.postgresql/postgresql)
+**Why we chose it?**
+It is a tool that is widely used widely in real world productions of Java applications.
 
-## Supported PostgreSQL and Java versions
-The current version of the driver should be compatible with **PostgreSQL 8.4 and higher** using the version 3.0 of the protocol and **Java 8** (JDBC 4.2) or above. Unless you have unusual requirements (running old applications or JVMs), this is the driver you should be using.
+This open source library is maintained by The PostgreSQL Global Development Group and contributors from the Java/PostgreSQL community.
 
-PgJDBC regression tests are run against all PostgreSQL versions since 9.1, including "build PostgreSQL from git master" version. There are other derived forks of PostgreSQL but they have not been certified to run with PgJDBC. If you find a bug or regression on supported versions, please file an [Issue](https://github.com/pgjdbc/pgjdbc/issues).
+# Getting the driver
+PostgreSQL Versions: Compatible with PostgreSQL 8.4 and higher, utilizing version 3.0 of the protocol.
+The current version of the driver should be compatible with PostgreSQL® 8.2 and higher using the version 3.0 of the PostgreSQL® protocol, and it’s compatible with Java 8 (JDBC 4.2) and above.
+Java Versions: Requires Java 8 (JDBC 4.2) or above.
 
-> **Note:** PgJDBC versions since 42.8.0 are not guaranteed to work with PostgreSQL older than 9.1.
+For including the driver in the Maven central we need to add this to pom.xml and replace the latest with the version used:
 
-## Get the Driver
-Most people do not need to compile PgJDBC. You can download the precompiled driver (jar) from the [PostgreSQL JDBC site](https://jdbc.postgresql.org/download/) or using your chosen dependency management tool:
-
-### Maven Central
-You can search on The Central Repository with GroupId and ArtifactId [org.postgresql:postgresql][mvn-search].
-
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.postgresql/postgresql/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.postgresql/postgresql)
-
-```xml
-<!-- Add the following dependency to your pom.xml, -->
-<!-- replacing LATEST with specific version as required -->
-
+```
 <dependency>
   <groupId>org.postgresql</groupId>
   <artifactId>postgresql</artifactId>
@@ -40,133 +27,145 @@ You can search on The Central Repository with GroupId and ArtifactId [org.postgr
 </dependency>
 ```
 
-[mvn-search]: https://search.maven.org/artifact/org.postgresql/postgresql "Search on Maven Central"
+# Breadth-Wise analysis
+**1. JDBC specifications:** Suppports JDBC 4.2 and above.
 
-#### Development snapshots
-Snapshot builds (builds from `master` branch) are also deployed to OSS Sonatype Snapshot Repository, so you can test current development version (test some bugfix) by enabling the repository and using the latest [SNAPSHOT](https://oss.sonatype.org/content/repositories/snapshots/org/postgresql/postgresql/) version.
+**2. Secure connection** using SSL and TLS.
 
-There are also available (snapshot) binary RPMs in [Fedora's Copr repository](https://copr.fedorainfracloud.org/coprs/g/pgjdbc/pgjdbc-travis/).
+**3. High level architecture of PGJDBC:** It has a modular architecture as follows:
+- **Connection Management:** Handles establishing and managing database connections.
+- **Query Execution:** Parses and executes SQL queries.
+- **Result Handling:** Processes results returned from the database.
+- **Type Mapping:** Maps PostgreSQL data types to Java types.
+- **Protocol Interface:** Manages communication using PostgreSQL's native protocol.
 
-----------------------------------------------------
-## Documentation
-For more information you can read [the PgJDBC driver documentation](https://jdbc.postgresql.org/documentation/) or for general JDBC documentation please refer to [The Java™ Tutorials](http://docs.oracle.com/javase/tutorial/jdbc/).
+**4. Files and folders:**
 
-### Driver and DataSource class
-
-| Implements                          | Class                                          |
-| ----------------------------------- | ---------------------------------------------- |
-| java.sql.Driver                     | **org.postgresql.Driver**                      |
-| javax.sql.DataSource                | org.postgresql.ds.PGSimpleDataSource           |
-| javax.sql.ConnectionPoolDataSource  | org.postgresql.ds.PGConnectionPoolDataSource   |
-| javax.sql.XADataSource              | org.postgresql.xa.PGXADataSource               |
-
-### Building the Connection URL
-The driver recognises JDBC URLs of the form:
+```plaintext
+pgjdbc/
+├── .github/                # GitHub-specific configurations and workflows
+├── benchmarks/             # Performance benchmarking tools
+├── build-logic-commons/    # Shared build logic scripts
+├── build-logic/            # Build configurations and scripts
+├── certdir/                # SSL certificate files for testing
+├── config/                 # Configuration files
+├── docker/                 # Docker configurations for testing environments
+├── docs/                   # Project documentation
+├── gradle/                 # Gradle wrapper files
+├── packaging/              # Packaging scripts for distributions
+├── pgjdbc-osgi-test/       # OSGi-specific tests
+├── pgjdbc/                 # Main source code
+│   ├── src/
+│   │   ├── main/
+│   │   │   └── java/
+│   │   │       └── org/
+│   │   │           └── postgresql/    # Core driver implementation
+│   │   └── test/
+│   │       └── java/
+│   │           └── org/
+│   │               └── postgresql/    # Test cases
+├── test-anorm-sbt/         # Tests for Anorm (Scala) integration
+├── test-gss/               # Tests for GSSAPI (Kerberos) authentication
+├── .editorconfig           # Editor configuration
+├── .gitignore              # Git ignore rules
+├── build.gradle.kts        # Gradle build script
+├── settings.gradle.kts     # Gradle settings
+├── README.md               # Project overview
 ```
-jdbc:postgresql:database
-jdbc:postgresql:
-jdbc:postgresql://host/database
-jdbc:postgresql://host/
-jdbc:postgresql://host:port/database
-jdbc:postgresql://host:port/
-jdbc:postgresql://?service=myservice
+
+# Depth Wise analysis
+## Core files studied
+- **PgConnection.java**
+This java file is located at org/postgresql/jdbc/ and manages database connection, transaction management and statement creation.
+
+This file sets up session parameters like autocommit, readOnly, and transactionIsolation, has objects like Statement, PreparedStatement, and CallableStatement.
+
+It also has methods like commit(), rollback(), and setSavepoint() to manage transactions.
+
+- **QueryExecutorImpl.java**
+This file located at org/postgresql/core/v3/ handles the execution of SQL queries, parsing and sending to the server and processing the results.
+
+A code snippet we observed:
+```public void sendQuery(Query query, ParameterList parameters) throws SQLException {
+    // Prepare the query
+    SimpleQuery simpleQuery = (SimpleQuery) query;
+    // Send the query to the server
+    sendParse(simpleQuery, parameters);
+    sendBind(simpleQuery, parameters);
+    sendExecute(simpleQuery);
+    sendSync();
+}
 ```
-The general format for a JDBC URL for connecting to a PostgreSQL server is as follows, with items in square brackets ([ ]) being optional:
+There are various methods being implemented like sendParse(), sendBind(), sendExecute() which help in parsing, binding and executing the prepared statement.
+
+- **TypeInfoCache.java**
+This java file at org/postgresql/core/ caches the information about postgresql data types to optimize type mapping and reduce redundant queries.
+
+This file is responsible for Type OID mapping, SQL type mapping, and array type handling.
+```public int getSQLType(String pgTypeName) throws SQLException {
+    Integer sqlType = pgTypeNameToSQLType.get(pgTypeName);
+    if (sqlType != null) {
+        return sqlType;
+    }
+    // Fallback to querying the database
+    int oid = getPGType(pgTypeName);
+    return getSQLType(oid);
+}
 ```
-jdbc:postgresql:[//host[:port]/][database][?property1=value1[&property2=value2]...]
+
+    1. pgTypeNameToSQLType: A map caching PostgreSQL type names to SQL types.
+
+    2. getPGType(pgTypeName): Retrieves the OID for the given PostgreSQL type name. 
+    
+    3. getSQLType(oid): Retrieves the SQL type for the given OID.
+
+- **Key data structures used**
+    1. HashMap: Used for caching and quick lookups.
+    2. ArrayList: Manages list of parameters and    results.
+    3. byte[] Arrays: Handles raw data transmission over sockets.
+
+
+# Using the driver
+
+1. Firstly any program using JDBC must include: 
+```import java.sql.*;```
+
+2. Connecting to the Database:
+To connect the following URLs are used:
+- jdbc:postgresql:database
+- jdbc:postgresql:/
+- jdbc:postgresql://host/database
+- jdbc:postgresql://host/
+- jdbc:postgresql://host:port/database
+- jdbc:postgresql://host:port/
+
+3. Parameters for connecting:
+
+```String url = "jdbc:postgresql://localhost/test";
+Properties props = new Properties();
+props.setProperty("user", "fred");
+props.setProperty("password", "secret");
+props.setProperty("ssl", "true");
+Connection conn = DriverManager.getConnection(url, props);
+
+String url = "jdbc:postgresql://localhost/test?user=fred&password=secret&ssl=true";
+Connection conn = DriverManager.getConnection(url);
 ```
-where:
- * **jdbc:postgresql:** (Required) is known as the sub-protocol and is constant.
- * **host** (Optional) is the server address to connect. This could be a DNS or IP address, or it could be *localhost* or *127.0.0.1* for the local computer. To specify an IPv6 address your must enclose the host parameter with square brackets (jdbc:postgresql://[::1]:5740/accounting). Defaults to `localhost`.
- * **port** (Optional) is the port number listening on the host. Defaults to `5432`.
- * **database** (Optional) is the database name. Defaults to the same name as the *user name* used in the connection.
- * **propertyX** (Optional) is one or more option connection properties. For more information see *Connection properties*.
+Here user and password are the Strings of credentials.
 
-### Logging
-PgJDBC uses java.util.logging for logging.
-To configure log levels and control log output destination (e.g. file or console), configure your java.util.logging properties accordingly for the org.postgresql logger.
-Note that the most detailed log levels, "`FINEST`", may include sensitive information such as connection details, query SQL, or command parameters.
+4. Issuing a query and processing:
+To issue any SQL statement at any time you need a PreparedStatement or Statement instance. This example will issue a simple query and print out the first column of each row using a Statement.
 
-#### Connection Properties
-In addition to the standard connection parameters the driver supports a number of additional properties which can be used to specify additional driver behaviour specific to PostgreSQL™. These properties may be specified in either the connection URL or an additional Properties object parameter to DriverManager.getConnection.
+```
+Statement st = conn.createStatement();
+ResultSet rs = st.executeQuery("SELECT * FROM mytable WHERE columnfoo = 500");
+while (rs.next()) {
+    System.out.print("Column 1 returned ");
+    System.out.println(rs.getString(1));
+}
+rs.close();
+st.close();
+```
 
-| Property                      | Type |         Default         | Description                                                                                                                                                                                                                                                                                                                                     |
-|-------------------------------| -- |:-----------------------:|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| user                          | String |          null           | The database user on whose behalf the connection is being made.                                                                                                                                                                                                                                                                               |
-| password                      | String |          null           | The database user's password.                                                                                                                                                                                                                                                                                                                 |
-| options                       | String |          null           | Specify 'options' connection initialization parameter.                                                                                                                                                                                                                                                                                        |
-| service                       | String |          null           | Specify 'service' name described in pg_service.conf file. References: [The Connection Service File](https://www.postgresql.org/docs/current/libpq-pgservice.html) and [The Password File](https://www.postgresql.org/docs/current/libpq-pgpass.html). 'service' file can provide all properties including 'hostname=', 'port=' and 'dbname='. |
-| ssl                           | Boolean |          false          | Control use of SSL (true value causes SSL to be required)                                                                                                                                                                                                                                                                                    |
-| sslfactory                    | String | org.postgresql.ssl.LibPQFactory | Provide a SSLSocketFactory class when using SSL.                                                                                                                                                                                                                                                                                      |
-| sslfactoryarg (deprecated)    | String |          null           | Argument forwarded to constructor of SSLSocketFactory class.                                                                                                                                                                                                                                                                                  |
-| sslmode                       | String |         prefer          | Controls the preference for opening using an SSL encrypted connection.                                                                                                                                                                                                                                                                        |
-| sslcert                       | String |          null           | The location of the client's SSL certificate                                                                                                                                                                                                                                                                                                  |
-| sslkey                        | String |          null           | The location of the client's PKCS#8 or PKCS#12 SSL key, for PKCS the extension must be .p12 or .pfx and the alias must be `user`                                                                                                                                                                                                              |
-| sslrootcert                   | String |          null           | The location of the root certificate for authenticating the server.                                                                                                                                                                                                                                                                           |
-| sslhostnameverifier           | String |          null           | The name of a class (for use in [Class.forName(String)](https://docs.oracle.com/javase/6/docs/api/java/lang/Class.html#forName%28java.lang.String%29)) that implements javax.net.ssl.HostnameVerifier and can verify the server hostname.                                                                                                     |
-| sslpasswordcallback           | String |          null           | The name of a class (for use in [Class.forName(String)](https://docs.oracle.com/javase/6/docs/api/java/lang/Class.html#forName%28java.lang.String%29)) that implements javax.security.auth.callback.CallbackHandler and can handle PasswordCallback for the ssl password.                                                                     |
-| sslpassword                   | String |          null           | The password for the client's ssl key (ignored if sslpasswordcallback is set)                                                                                                                                                                                                                                                                 |
-| sslnegotiation                | String |        postgres         | Determines if ALPN ssl negotiation will be used or not. Set to `direct` to choose ALPN.                                                                                                                                                                                                                                                       |
-| sendBufferSize                | Integer |           -1            | Socket write buffer size                                                                                                                                                                                                                                                                                                                     |
-| maxSendBufferSize             | Integer |        65536            | Maximum amount of bytes buffered before sending to the backend. pgjdbc uses `least(maxSendBufferSize, greatest(8192, SO_SNDBUF))` to determine the buffer size.                                                                                                                                                                              |
-| receiveBufferSize             | Integer |           -1            | Socket read buffer size                                                                                                                                                                                                                                                                                                                      |
-| logServerErrorDetail          | Boolean |          true           | Allows server error detail (such as sql statements and values) to be logged and passed on in exceptions.  Setting to false will mask these errors so they won't be exposed to users, or logs.                                                                                                                                                |
-| allowEncodingChanges          | Boolean |          false          | Allow for changes in client_encoding                                                                                                                                                                                                                                                                                                         |
-| logUnclosedConnections        | Boolean |          false          | When connections that are not explicitly closed are garbage collected, log the stacktrace from the opening of the connection to trace the leak source                                                                                                                                                                                        |
-| binaryTransfer                | Boolean |          true           | Enable binary transfer for supported built-in types if possible. Setting this to false disables any binary transfer unless it's individually activated for each type with `binaryTransferEnable`. Whether it is possible to use binary transfer at all depends on server side prepared statements (see `prepareThreshold` ).                 |
-| binaryTransferEnable          | String |           ""            | Comma separated list of types to enable binary transfer. Either OID numbers or names.                                                                                                                                                                                                                                                         |
-| binaryTransferDisable         | String |           ""            | Comma separated list of types to disable binary transfer. Either OID numbers or names. Overrides values in the driver default set and values set with binaryTransferEnable.                                                                                                                                                                   |
-| prepareThreshold              | Integer |            5            | Determine the number of `PreparedStatement` executions required before switching over to use server side prepared statements. The default is five, meaning start using server side prepared statements on the fifth execution of the same `PreparedStatement` object. A value of -1 activates server side prepared statements and forces binary transfer for enabled types (see `binaryTransfer` ). |
-| preparedStatementCacheQueries | Integer |           256           | Specifies the maximum number of entries in per-connection cache of prepared statements. A value of 0 disables the cache.                                                                                                                                                                                                                     |
-| preparedStatementCacheSizeMiB | Integer |            5            | Specifies the maximum size (in megabytes) of a per-connection prepared statement cache. A value of 0 disables the cache.                                                                                                                                                                                                                     |
-| defaultRowFetchSize           | Integer |            0            | Positive number of rows that should be fetched from the database when more rows are needed for ResultSet by each fetch iteration                                                                                                                                                                                                             |
-| loginTimeout                  | Integer |            0            | Specify how long in seconds max(2147484) to wait for establishment of a database connection.                                                                                                                                                                                                                                                 |
-| connectTimeout                | Integer |           10            | The timeout value in seconds max(2147484) used for socket connect operations.                                                                                                                                                                                                                                                                |
-| socketTimeout                 | Integer |            0            | The timeout value in seconds max(2147484) used for socket read operations.                                                                                                                                                                                                                                                                   |
-| cancelSignalTimeout           | Integer |            10           | The timeout that is used for sending cancel command.                                                                                                                                                                                                                                                                                         |
-| sslResponseTimeout            | Integer |          5000           | Socket timeout in milliseconds waiting for a response from a request for SSL upgrade from the server.                                                                                                                                                                                                                                        |
-| tcpKeepAlive                  | Boolean |          false          | Enable or disable TCP keep-alive.                                                                                                                                                                                                                                                                                                            |
-| tcpNoDelay                    | Boolean |          true           | Enable or disable TCP no delay.                                                                                                                                                                                                                                                                                                              |
-| ApplicationName               | String  | PostgreSQL JDBC Driver   | The application name (require server version >= 9.0). If assumeMinServerVersion is set to >= 9.0 this will be sent in the startup packets, otherwise after the connection is made                                                                                                                                                           |
-| readOnly                      | Boolean |          false          | Puts this connection in read-only mode                                                                                                                                                                                                                                                                                                       |
-| readOnlyMode                  | String |          transaction   | Specifies the behavior when a connection is set to be read only, possible values: ignore, transaction, always                                                                                                                                                                                                                                  |
-| disableColumnSanitiser        | Boolean |          false          | Enable optimization that disables column name sanitiser                                                                                                                                                                                                                                                                                      |
-| assumeMinServerVersion        | String |          null           | Assume the server is at least that version                                                                                                                                                                                                                                                                                                    |
-| currentSchema                 | String |          null           | Specify the schema (or several schema separated by commas) to be set in the search-path                                                                                                                                                                                                                                                       |
-| targetServerType              | String |           any           | Specifies what kind of server to connect, possible values: any, master, slave (deprecated), secondary, preferSlave (deprecated), preferSecondary, preferPrimary                                                                                                                                                                               |
-| hostRecheckSeconds            | Integer |           10            | Specifies period (seconds) after which the host status is checked again in case it has changed                                                                                                                                                                                                                                               |
-| loadBalanceHosts              | Boolean |          false          | If disabled hosts are connected in the given order. If enabled hosts are chosen randomly from the set of suitable candidates                                                                                                                                                                                                                 |
-| socketFactory                 | String |          null           | Specify a socket factory for socket creation                                                                                                                                                                                                                                                                                                  |
-| socketFactoryArg (deprecated) | String |          null           | Argument forwarded to constructor of SocketFactory class.                                                                                                                                                                                                                                                                                     |
-| autosave                      | String |          never          | Specifies what the driver should do if a query fails, possible values: always, never, conservative                                                                                                                                                                                                                                            |
-| cleanupSavepoints             | Boolean |          false          | In Autosave mode the driver sets a SAVEPOINT for every query. It is possible to exhaust the server shared buffers. Setting this to true will release each SAVEPOINT at the cost of an additional round trip.                                                                                                                                 |
-| preferQueryMode               | String |        extended         | Specifies which mode is used to execute queries to database, possible values: extended, extendedForPrepared, extendedCacheEverything, simple                                                                                                                                                                                                  |
-| reWriteBatchedInserts         | Boolean |          false          | Enable optimization to rewrite and collapse compatible INSERT statements that are batched.                                                                                                                                                                                                                                                   |
-| escapeSyntaxCallMode          | String |         select          | Specifies how JDBC escape call syntax is transformed into underlying SQL (CALL/SELECT), for invoking procedures or functions (requires server version >= 11), possible values: select, callIfNoReturn, call                                                                                                                                   |
-| maxResultBuffer               | String |          null           | Specifies size of result buffer in bytes, which can't be exceeded during reading result set. Can be specified as particular size (i.e. "100", "200M" "2G") or as percent of max heap memory (i.e. "10p", "20pct", "50percent")                                                                                                                |
-| gssLib                        | String |          auto           | Permissible values are auto (default, see below), sspi (force SSPI) or gssapi (force GSSAPI-JSSE).                                                                                                                                                                                                                                            |
-| gssResponseTimeout            | Integer |          5000           | Socket timeout in milliseconds waiting for a response from a request for GSS encrypted connection from the server.                                                                                                                                                                                                                           |
-| gssEncMode                    | String |          allow          | Controls the preference for using GSSAPI encryption for the connection, values are disable, allow, prefer, and require                                                                                                                                                                                                                        |
-| useSpnego                     | String |          false           | Use SPNEGO in SSPI authentication requests                                                                                                                                                                                                                                                                                                   |
-| adaptiveFetch                 | Boolean |          false          | Specifies if number of rows fetched in ResultSet by each fetch iteration should be dynamic. Number of rows will be calculated by dividing maxResultBuffer size into max row size observed so far. Requires declaring maxResultBuffer and defaultRowFetchSize for first iteration.                                                            |
-| adaptiveFetchMinimum          | Integer |            0            | Specifies minimum number of rows, which can be calculated by adaptiveFetch. Number of rows used by adaptiveFetch cannot go below this value.                                                                                                                                                                                                 |
-| adaptiveFetchMaximum          | Integer |           -1            | Specifies maximum number of rows, which can be calculated by adaptiveFetch. Number of rows used by adaptiveFetch cannot go above this value. Any negative number set as adaptiveFetchMaximum is used by adaptiveFetch as infinity number of rows.                                                                                            |
-| localSocketAddress            | String |          null           | Hostname or IP address given to explicitly configure the interface that the driver will bind the client side of the TCP/IP connection to when connecting.                                                                                                                                                                                     |
-| quoteReturningIdentifiers     | Boolean |          true           | By default we double quote returning identifiers. Some ORM's already quote them. Switch allows them to turn this off                                                                                                                                                                                                                         |
-| authenticationPluginClassName | String |          null           | Fully qualified class name of the class implementing the AuthenticationPlugin interface. If this is null, the password value in the connection properties will be used.                                                                                                                                                                       |
-| unknownLength                 | Integer |   Integer.MAX_LENGTH    | Specifies the length to return for types of unknown length                                                                                                                                                                                                                                                                                   |
-| stringtype                    | String |          null           | Specify the type to use when binding `PreparedStatement` parameters set via `setString()`                                                                                                                                                                                                                                                     |
-| channelBinding                 | String |   prefer    | This option controls the client's use of channel binding. `require` means that the connection must employ channel binding, `prefer` means that the client will choose channel binding if available, and `disable` prevents the use of channel binding.                                                                                                   |
-
-#### System Properties
-| Property                      | Type |         Default         | Description                                                                                                                                                                                                                                                                                                                                     |
-|-------------------------------| -- |:-----------------------:|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------    |
-| pgjdbc.config.cleanup.thread.ttl | long | 30000 |  The driver has an internal cleanup thread which monitors and cleans up unclosed connections. This property sets the duration (in milliseconds) the cleanup thread will keep running if there is nothing to clean up. |
-
-## Contributing
-For information on how to contribute to the project see the [Contributing Guidelines](CONTRIBUTING.md)
-
-----------------------------------------------------
-### Sponsors
-
-* [PostgreSQL International](http://www.postgresintl.com)
+5. Getting the results based on a cursor: Only a small number of rows are fetched using ResultSet on a database cursor as the database can have very large amounts of data.
+A small number of rows are cached on the client side of the connection and when exhausted the next block of rows is retrieved by repositioning the cursor.
