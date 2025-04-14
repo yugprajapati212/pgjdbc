@@ -169,3 +169,28 @@ st.close();
 
 5. Getting the results based on a cursor: Only a small number of rows are fetched using ResultSet on a database cursor as the database can have very large amounts of data.
 A small number of rows are cached on the client side of the connection and when exhausted the next block of rows is retrieved by repositioning the cursor.
+# Flow of the JDBC query execution
+This is what happens at a low level when a query is executed:
+1. Java app calls `Connection.prepareStatement()` or `createStatement()`
+2. A "PgStatement" object is returned by the driver.
+3. When .executeQuery() is called, driver does this:
+- Convert SQL to PostgreSQL protocol message.
+- `QueryExecutorImpl.sendQuery()` is used to send messages.
+- Parsing, binding, execution and syncing is done in order.
+- The result of the query is returned and wrapped in the ResultSet.
+- The `PGStream` class is used for raw socket communication with PostgreSQL. 
+
+# Testing and error handling
+PGJDBC uses JUnit for automated testing.
+It includes:
+- **Unit Tests**: For components like connections and statements.
+- **Integration Tests**: Which spin up real PostgreSQL instances (via Docker) to test actual DB I/O.
+
+Error handling:
+The driver translates PostgreSQL error responses into Java `SQLException`.
+
+Example:
+```java
+throw new PSQLException(GT.tr("Unknown type"), PSQLState.INVALID_PARAMETER_TYPE);
+
+# Our testing and experience
